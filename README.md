@@ -446,11 +446,11 @@ A Regional Cloud Spanner instance is spread across three zones. In case of a zon
 If your application consistently runs above the published 65% guidance, consider employing an [Autoscaler](https://github.com/cloudspannerecosystem/autoscaler) to dynamically provision the application’s Spanner resources based on CPU load.
 
 ### Configuring target QPS
-This benchmark allows you to set any number as the target QPS, so what number should you use? This will depend on your actual workload. For example, if you are just curious how far you can push Cloud Spanner, you can set this target QPS to an arbitrarily high number. YCSB will then issue as many QPS as Cloud Spanner can handle. Do note that this will push CPU utilization to 100% and the latency for each request may be well beyond that typical applications can handle. Another way to run this benchmark is to gradually ramp up QPS until latency numbers are beyond what your application can tolerate. For example, starting with X qps per node, and gradually ramp up till Y QPS while P50 < 5ms, P90 < 20ms and P99 latencies at < 200ms.
+This benchmark allows you to set any number as the target QPS, so what number should you use? This will depend on your actual workload. For example, if you are just curious how far you can push Cloud Spanner, you can set this target QPS to an arbitrarily high number. YCSB will then issue as many QPS as Cloud Spanner can handle. Note that this can push Spanner CPU utilization to 100%, leading to higher latency for each request. Another way to run this benchmark is to gradually ramp up QPS until latency numbers are beyond what your application can tolerate. For example: Start with X qps per node, and gradually ramp up to Y QPS while keeping P50 < 5ms, P90 < 20ms and P99 latencies at < 200ms.
 
 ### Provisioning
 
-These run against [Regional](https://cloud.google.com/spanner/docs/instances#regional_configurations) Cloud Spanner instances (us-west1) using in-region [Google Compute Engine](https://cloud.google.com/compute) virtual machines. All benchmarks provision a three-node Spanner Instance with thirty [n1-standard-1](https://cloud.google.com/compute/docs/machine-types#n1_standard_machine_types) Compute Engine VMs. (10VMs per Spanner Node
+These benchmarks are designed to run against [Regional](https://cloud.google.com/spanner/docs/instances#regional_configurations) Cloud Spanner instances (us-west1) using in-region [Google Compute Engine](https://cloud.google.com/compute) virtual machines. All benchmarks provision a three-node Spanner Instance with fifteen [n1-standard-1](https://cloud.google.com/compute/docs/machine-types#n1_standard_machine_types) Compute Engine VMs. (5VMs per Spanner Node
 
 ### Sleeping between Load and Run
 
