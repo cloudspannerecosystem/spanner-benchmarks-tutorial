@@ -43,8 +43,8 @@ benchmarks:
       ycsb_operation_count: 100000000 # Opcount high so we hit timelimit
       ycsb_threads_per_client: '25'
 
-      # Target 1,100 QPS/VM (5,500 QPS / Spanner Node)
-      ycsb_run_parameters: target=1100,requestdistribution=zipfian,dataintegrity=True
+      # Target 1,000 QPS/VM (5,000 QPS / Spanner Node)
+      ycsb_run_parameters: target=1000,requestdistribution=zipfian,dataintegrity=True
 
       # Custom YCSB tar to use Spanner Java Client v2.0.1
       ycsb_tar_url: https://storage.googleapis.com/externally_shared_files/ycsb-0.18.0-SNAPSHOT.tar.gz
