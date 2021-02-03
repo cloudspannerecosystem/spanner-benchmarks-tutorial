@@ -1,0 +1,54 @@
+# Copyright 2021 Google LLC
+
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+
+#     https://www.apache.org/licenses/LICENSE-2.0
+
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+# Spanner latency benchmark PKB configuration (workloadx)
+benchmarks:
+- cloud_spanner_ycsb:
+    flags:
+      # Spanner Provisioning
+      cloud_spanner_config: regional-us-west1
+      cloud_spanner_nodes: 3
+
+      # GCE Provisioning: 5 In-Region VMs per Spanner Node
+      ycsb_client_vms: 15
+      machine_type: n1-standard-2
+      gce_network_name: default
+      zones: us-west1-a
+
+      # Data: 100M 1kb rows (100GB total)
+      ycsb_record_count: 100000000
+      ycsb_field_count: 1
+      ycsb_field_length: 1000
+      
+      # Use 25 threads/VM in Load phase
+      ycsb_preload_threads: '25'
+
+      # Sleep 1hr between Load and Run phases
+      ycsb_sleep_after_load_in_sec: 3600
+
+      # Execute workloadx for 30minutes
+      ycsb_workload_files: workloadx
+      ycsb_timelimit: 1800
+      ycsb_operation_count: 100000000 # Opcount high so we hit timelimit
+      ycsb_threads_per_client: '25'
+
+      # Target 240 QPS/VM (1,200 QPS / Spanner Node)
+      ycsb_run_parameters: target=240,requestdistribution=zipfian,dataintegrity=True
+
+      # Custom YCSB tar to use Spanner Java Client v2.0.1
+      ycsb_tar_url: https://storage.googleapis.com/externally_shared_files/ycsb-0.18.0-SNAPSHOT.tar.gz
+      ycsb_version: 0.18.0-SNAPSHOT
+
+      # Output the results as a histogram
+      ycsb_measurement_type: hdrhistogram
