@@ -417,7 +417,7 @@ You have completed the Spanner PerfKit Benchmarker tutorial!
 ### Connection timed out
 Your test may fail with the following error:
 `STDOUT: STDERR: ssh: connect to host xxx.xxx.xxx.xxx port 22: Connection timed out in CreateAndBootVm`
-This is a transient error that sometimes occur during a run. This error occurs at a higher frequency for larger instances / number of client VMs. You can rerun to get rid of this error. Alternatively, you can amend [this line in pkb](https://github.com/GoogleCloudPlatform/PerfKitBenchmarker/blob/46fe3bf4dc71e7357ab75c491c6a0d47037c2b19/perfkitbenchmarker/linux_packages/ycsb.py#L1206) to become  
+This is a transient error that sometimes occurs during a run. This error occurs at a higher frequency for larger instances / number of client VMs. You can rerun to get rid of this error. Alternatively, you can amend [this line in pkb](https://github.com/GoogleCloudPlatform/PerfKitBenchmarker/blob/46fe3bf4dc71e7357ab75c491c6a0d47037c2b19/perfkitbenchmarker/linux_packages/ycsb.py#L1206) to become  
 `vm.RemoteCommand('sudo rm -f ' + remote_path, ignore_failure=True)`
 (add the ignore_failure=True flag)
 
