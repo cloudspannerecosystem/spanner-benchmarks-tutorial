@@ -160,7 +160,7 @@ SSH into the GCE VM created in Step 1 and install the required Github Repositori
     ```sh
     gcloud compute ssh pkb-host --zone=us-west1-a
     ```
-If you are running into issues with ssh timing out, you can alternatively access your VM instance via the Compute Engine page and click SSH under remote access.
+If you are unable to connect using the `gcloud compute ssh` command, you can use one of the other connection methods described in the [Google Compute Engine Documentation](https://cloud.google.com/compute/docs/instances/connecting-to-instance).
 
 Run all following commands from within the GCE VM.
 
@@ -263,9 +263,9 @@ __Note__: This tutorial splits the benchmarks into two workload categories:
           cloud_spanner_config: regional-us-west1
           cloud_spanner_nodes: 3
 
-          # GCE Provisioning: 10 In-Region VMs per Spanner Node
-          ycsb_client_vms: 30
-          machine_type: n1-standard-1
+          # GCE Provisioning: 5 In-Region VMs per Spanner Node
+          ycsb_client_vms: 15
+          machine_type: n1-standard-2
           gce_network_name: default
           zones: us-west1-a
 
@@ -274,19 +274,20 @@ __Note__: This tutorial splits the benchmarks into two workload categories:
           ycsb_field_count: 1
           ycsb_field_length: 1000
           
-          # Use 320 threads/VM in Load phase
-          ycsb_preload_threads: '320'
+          # Use 25 threads/VM in Load phase
+          ycsb_preload_threads: '25'
 
           # Sleep 1hr between Load and Run phases
           ycsb_sleep_after_load_in_sec: 3600
 
           # Execute workloada for 30minutes
+          ycsb_workload_files: workloada
           ycsb_timelimit: 1800
           ycsb_operation_count: 100000000 # Opcount high so we hit timelimit
           ycsb_threads_per_client: '25'
 
-          # Target 165 QPS/VM (1,650 QPS / Spanner Node)
-          ycsb_run_parameters: target=165,requestdistribution=zipfian,dataintegrity=True
+          # Target 330 QPS/VM (1,650 QPS / Spanner Node)
+          ycsb_run_parameters: target=330,requestdistribution=zipfian,dataintegrity=True
 
           # Custom YCSB tar to use Spanner Java Client v2.0.1
           ycsb_tar_url: https://storage.googleapis.com/externally_shared_files/ycsb-0.18.0-SNAPSHOT.tar.gz
@@ -312,7 +313,7 @@ __Note__: This tutorial splits the benchmarks into two workload categories:
     ```sh
     cd $HOME/PerfKitBenchmarker
     nohup ./pkb.py \
-      --benchmark_config_file=$HOME/spanner-pkb-benchmarking-tutorial/data/latency_benchmarks/workloada.yaml \
+      --benchmark_config_file=$HOME/spanner-benchmarks-tutorial/data/latency_benchmarks/workloada.yaml \
       --bigquery_table=pkb_results.spanner_benchmarks \
       --file_log_level=info > nohup.out &
     ```
