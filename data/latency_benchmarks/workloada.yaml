@@ -46,9 +46,5 @@ benchmarks:
       # Target 300 QPS/VM (1,500 QPS / Spanner Node)
       ycsb_run_parameters: target=300,requestdistribution=zipfian,dataintegrity=True
 
-      # Custom YCSB tar to use Spanner Java Client v2.0.1
-      ycsb_tar_url: https://storage.googleapis.com/externally_shared_files/ycsb-0.18.0-SNAPSHOT.tar.gz
-      ycsb_version: 0.18.0-SNAPSHOT
-
       # Output the results as a histogram
       ycsb_measurement_type: hdrhistogram
