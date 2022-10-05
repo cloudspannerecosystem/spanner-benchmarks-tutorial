@@ -24,7 +24,7 @@ benchmarks:
       ycsb_client_vms: 15
       machine_type: n1-standard-2
       gce_network_name: default
-      zones: us-west1-a
+      zone: us-west1-a
 
       # Data: 100M 1kb rows (100GB total)
       ycsb_record_count: 100000000
