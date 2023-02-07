@@ -20,19 +20,19 @@ benchmarks:
       cloud_spanner_config: regional-us-west1
       cloud_spanner_nodes: 3
 
-      # GCE Provisioning: 5 In-Region VMs per Spanner Node
-      ycsb_client_vms: 15
+      # GCE Provisioning: 30 In-Region VMs per Spanner Node
+      ycsb_client_vms: 30
       machine_type: n1-standard-2
       gce_network_name: default
       zone: us-west1-a
 
-      # Data: 100M 1kb rows (100GB total)
-      ycsb_record_count: 100000000
+      # Data: 500M 1kb rows (500GB total)
+      ycsb_record_count: 500000000
       ycsb_field_count: 1
       ycsb_field_length: 1000
       
-      # Use 25 threads/VM in Load phase
-      ycsb_preload_threads: '25'
+      # Use 32 threads/VM in Load phase
+      ycsb_preload_threads: '32'
 
       # Sleep 1hr between Load and Run phases
       ycsb_sleep_after_load_in_sec: 3600
@@ -40,11 +40,11 @@ benchmarks:
       # Execute workloadc for 30minutes
       ycsb_workload_files: workloadc
       ycsb_timelimit: 1800
-      ycsb_operation_count: 100000000 # Opcount high so we hit timelimit
-      ycsb_threads_per_client: '25'
+      ycsb_operation_count: 2147483640 # Opcount high so we hit timelimit
+      ycsb_threads_per_client: '32'
 
-      # Target 2,200 QPS/VM (1,100 QPS / Spanner Node)
-      ycsb_run_parameters: target=2200,requestdistribution=zipfian,dataintegrity=True
+      # Target 1400 QPS/VM ( 14,000 QPS / Spanner Node)
+      ycsb_run_parameters: target=1400,requestdistribution=zipfian,dataintegrity=True
 
       # Output the results as a histogram
       ycsb_measurement_type: hdrhistogram
