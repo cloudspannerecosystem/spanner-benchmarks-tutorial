@@ -20,7 +20,7 @@ benchmarks:
       cloud_spanner_config: regional-us-west1
       cloud_spanner_nodes: 3
 
-      # GCE Provisioning: 30 In-Region VMs per Spanner Node
+      # GCE Provisioning: 10 In-Region VMs per Spanner Node.
       ycsb_client_vms: 30
       machine_type: n1-standard-2
       gce_network_name: default

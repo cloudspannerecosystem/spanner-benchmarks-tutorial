@@ -389,7 +389,7 @@ Example: Write-only throughput benchmark command:
 
 ```sh
 $HOME/PerfKitBenchmarker/pkb.py \
---benchmark_config_file=$HOME/spanner-benchmarks-tutorial/data/throughput_benchmarks/workloadx.yaml \
+--benchmark_config_file=$HOME/spanner-benchmarks-tutorial/data/data/throughput_benchmarks/workloadx.yaml \
 --bigquery_table=pkb_results.spanner_benchmarks
 ```
 
