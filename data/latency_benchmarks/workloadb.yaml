@@ -19,6 +19,7 @@ benchmarks:
       # Spanner Provisioning
       cloud_spanner_config: regional-us-west1
       cloud_spanner_nodes: 3
+      cloud_spanner_ycsb_readmode: 'read'
 
       # GCE Provisioning: 5 In-Region VMs per Spanner Node
       ycsb_client_vms: 15
