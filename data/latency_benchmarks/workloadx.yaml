@@ -17,20 +17,20 @@ benchmarks:
 - cloud_spanner_ycsb:
     flags:
       # Spanner Provisioning
-      cloud_spanner_config: regional-us-west1
+      cloud_spanner_config: regional-us-east4
       cloud_spanner_nodes: 3
 
       # GCE Provisioning: 5 In-Region VMs per Spanner Node
       ycsb_client_vms: 15
       machine_type: n1-standard-2
       gce_network_name: default
-      zone: us-west1-a
+      zone: us-east4-a
 
       # Data: 100M 1kb rows (100GB total)
       ycsb_record_count: 100000000
       ycsb_field_count: 1
       ycsb_field_length: 1000
-      
+
       # Use 25 threads/VM in Load phase
       ycsb_preload_threads: '25'
 
