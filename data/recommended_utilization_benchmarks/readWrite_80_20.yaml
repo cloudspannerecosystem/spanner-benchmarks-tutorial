@@ -1,3 +1,19 @@
+# Copyright 2021 Google LLC
+
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+
+#     https://www.apache.org/licenses/LICENSE-2.0
+
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+# Spanner custom recommended utilization benchmark for read/Write (80/20) workload.
+# This is a modified workloadb configuration to use a split of 80/20 for read/write.
 benchmarks:
 - cloud_spanner_ycsb:
     flags:
@@ -24,7 +40,7 @@ benchmarks:
       ycsb_sleep_after_load_in_sec: 3600
 
       # Execute workload for 30 minutes
-      ycsb_workload_files: workloada
+      ycsb_workload_files: workloadb
       ycsb_timelimit: 1800
       ycsb_operation_count: 2000000000 # Opcount high so we hit timelimit
       ycsb_threads_per_client: '25'
