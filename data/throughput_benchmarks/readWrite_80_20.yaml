@@ -12,16 +12,18 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# Spanner throughput benchmark PKB configuration (workloadx)
+# Spanner throughput benchmark PKB configuration for read/Write (80/20) workload.
+# This is a modified workloadb configuration to use a split of 80/20 for read/write.
 benchmarks:
 - cloud_spanner_ycsb:
     flags:
       # Spanner Provisioning
       cloud_spanner_config: regional-us-east4
       cloud_spanner_nodes: 3
+      cloud_spanner_ycsb_readmode: 'read'
 
-      # GCE Provisioning: 15 In-Region VMs per Spanner Node
-      ycsb_client_vms: 15
+      # GCE Provisioning: 40 In-Region VMs per Spanner Node
+      ycsb_client_vms: 40
       machine_type: n1-standard-2
       gce_network_name: default
       zone: us-east4-a
@@ -37,14 +39,15 @@ benchmarks:
       # Sleep 1hr between Load and Run phases
       ycsb_sleep_after_load_in_sec: 3600
 
-      # Execute workloadx for 30minutes
-      ycsb_workload_files: workloadx
+      # Execute workload for 30 minutes
+      ycsb_workload_files: workloadb # This workload file will be overriden by explicit params in ycsb_run_parameters for this benchmark
       ycsb_timelimit: 1800
       ycsb_operation_count: 2000000000 # Opcount high so we hit timelimit
       ycsb_threads_per_client: '25'
 
-      # Target 960 QPS/VM (4,800 QPS / Spanner Node)
-      ycsb_run_parameters: target=960,requestdistribution=zipfian,dataintegrity=True
+      # Target 885 QPS/VM (11800 QPS / Spanner Node)
+      # Workload parameters specified here (80/20 Read/Write)
+      ycsb_run_parameters: target=885,requestdistribution=zipfian,dataintegrity=True,readproportion=0.8,updateproportion=0.2,scanproportion=0,insertproportion=0
 
       # Output the results as a histogram
       ycsb_measurement_type: hdrhistogram

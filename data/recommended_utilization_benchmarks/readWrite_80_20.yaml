@@ -40,14 +40,14 @@ benchmarks:
       ycsb_sleep_after_load_in_sec: 3600
 
       # Execute workload for 30 minutes
-      ycsb_workload_files: workloadb
+      ycsb_workload_files: workloadb # This workload file will be overriden by explicit params in ycsb_run_parameters for this benchmark
       ycsb_timelimit: 1800
       ycsb_operation_count: 2000000000 # Opcount high so we hit timelimit
       ycsb_threads_per_client: '25'
 
-      # Target 708 QPS/VM (5900 QPS / Spanner Node)
+      # Target 624 QPS/VM (5200 QPS / Spanner Node)
       # Workload parameters specified here (80/20 Read/Write)
-      ycsb_run_parameters: target=708,requestdistribution=zipfian,dataintegrity=True,readproportion=0.8,updateproportion=0.2,scanproportion=0,insertproportion=0
+      ycsb_run_parameters: target=624,requestdistribution=zipfian,dataintegrity=True,readproportion=0.8,updateproportion=0.2,scanproportion=0,insertproportion=0
 
       # Output the results as a histogram
       ycsb_measurement_type: hdrhistogram
