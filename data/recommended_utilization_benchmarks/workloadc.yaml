@@ -44,9 +44,9 @@ benchmarks:
       ycsb_operation_count: 2000000000 # Opcount high so we hit timelimit
       ycsb_threads_per_client: '25'
 
-      # Target 1800 QPS/VM (15000 QPS / Spanner Node)
+      # Target 1500 QPS/VM (12500 QPS / Spanner Node)
       # Workload parameters specified here
-      ycsb_run_parameters: target=1800,requestdistribution=zipfian,dataintegrity=True,readproportion=1,updateproportion=0,scanproportion=0,insertproportion=0
+      ycsb_run_parameters: target=1500,requestdistribution=zipfian,dataintegrity=True,readproportion=1,updateproportion=0,scanproportion=0,insertproportion=0
 
       # Output the results as a histogram
       ycsb_measurement_type: hdrhistogram

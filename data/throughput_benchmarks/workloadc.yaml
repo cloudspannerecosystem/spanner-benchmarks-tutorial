@@ -21,8 +21,8 @@ benchmarks:
       cloud_spanner_nodes: 3
       cloud_spanner_ycsb_readmode: 'read'
 
-      # GCE Provisioning: 10 In-Region VMs per Spanner Node.
-      ycsb_client_vms: 45
+      # GCE Provisioning: 36 In-Region VMs per Spanner Node.
+      ycsb_client_vms: 36
       machine_type: n1-standard-2
       gce_network_name: default
       zone: us-east4-a
@@ -44,8 +44,8 @@ benchmarks:
       ycsb_operation_count: 2147483640 # Opcount high so we hit timelimit
       ycsb_threads_per_client: '32'
 
-      # Target 1800 QPS/VM ( 27,000 QPS / Spanner Node)
-      ycsb_run_parameters: target=1800,requestdistribution=zipfian,dataintegrity=True
+      # Target 1875 QPS/VM ( 22,500 QPS / Spanner Node)
+      ycsb_run_parameters: target=1875,requestdistribution=zipfian,dataintegrity=True
 
       # Output the results as a histogram
       ycsb_measurement_type: hdrhistogram

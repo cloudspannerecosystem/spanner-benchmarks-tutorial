@@ -148,8 +148,8 @@ From the Cloud Shell, create a new Google Compute Engine (GCE) VM with the neces
 ```sh
 gcloud compute instances create pkb-host \
   --scopes="https://www.googleapis.com/auth/compute,https://www.googleapis.com/auth/spanner.admin,https://www.googleapis.com/auth/bigquery" \
-  --machine-type=n1-standard-1 \
-  --zone=us-west1-a
+  --machine-type=n1-standard-2 \
+  --zone=us-east4-a
 ```
 
 ### Task 2. Install PerfKit Benchmarker within the GCE instance
@@ -158,7 +158,7 @@ SSH into the GCE VM created in Step 1 and install the required Github Repositori
 
 1.  SSH into your GCE VM
     ```sh
-    gcloud compute ssh pkb-host --zone=us-west1-a
+    gcloud compute ssh pkb-host --zone=us-east4-a
     ```
 If you are unable to connect using the `gcloud compute ssh` command, you can use one of the other connection methods described in the [Google Compute Engine Documentation](https://cloud.google.com/compute/docs/instances/connecting-to-instance).
 
@@ -245,6 +245,7 @@ __Note__: This tutorial splits the benchmarks into two workload categories:
 
 *   [throughput.yaml](./data/throughput_benchmarks): Maximum-throughput workloads
 *   [latency.yaml](./data/latency_benchmarks): Latency-sensitive workloads
+*   [recommended_utilization.yaml](./data/recommended_utilization_benchmarks/): Benchmarks at spanner's [recommended CPU utilization](https://cloud.google.com/spanner/docs/cpu-utilization#recommended-max)
 
 1.  Grab and review the PKB Configuration file for latency testing.
 
@@ -260,20 +261,21 @@ __Note__: This tutorial splits the benchmarks into two workload categories:
     - cloud_spanner_ycsb:
         flags:
           # Spanner Provisioning
-          cloud_spanner_config: regional-us-west1
+          cloud_spanner_config: regional-us-east4
           cloud_spanner_nodes: 3
+          cloud_spanner_ycsb_readmode: 'read'
 
           # GCE Provisioning: 5 In-Region VMs per Spanner Node
           ycsb_client_vms: 15
           machine_type: n1-standard-2
           gce_network_name: default
-          zone: us-west1-a
+          zone: us-east4-a
 
           # Data: 100M 1kb rows (100GB total)
           ycsb_record_count: 100000000
           ycsb_field_count: 1
           ycsb_field_length: 1000
-          
+
           # Use 25 threads/VM in Load phase
           ycsb_preload_threads: '25'
 
@@ -288,10 +290,6 @@ __Note__: This tutorial splits the benchmarks into two workload categories:
 
           # Target 300 QPS/VM (1,500 QPS / Spanner Node)
           ycsb_run_parameters: target=300,requestdistribution=zipfian,dataintegrity=True
-
-          # Custom YCSB tar to use Spanner Java Client v2.0.1
-          ycsb_tar_url: https://storage.googleapis.com/externally_shared_files/ycsb-0.18.0-SNAPSHOT.tar.gz
-          ycsb_version: 0.18.0-SNAPSHOT
 
           # Output the results as a histogram
           ycsb_measurement_type: hdrhistogram
@@ -367,9 +365,10 @@ __Note__: This tutorial splits the benchmarks into two workload categories:
 
 ### Task 5. Run more benchmarks
 
-You can use the .yaml files in the [data folder](./data) to run latency or throughput benchmarks on some of the 
+You can use the .yaml files in the [data folder](./data) to run latency or throughput or recommended_utilization benchmarks on some of the
 common workloads provided by [ycsb](https://github.com/GoogleCloudPlatform/PerfKitBenchmarker/blob/07de8d5b6f59eb477c39e770ec83d32164ea9b0b/perfkitbenchmarker/data/ycsb/)
-folder. You can also modify those workloads to run your own custom benchmarks.
+folder. The data folders for throughput and recommended_utilization also contains custom benchmark files for an 80/20 Read/Write split workload.
+You can also modify any of these workloads to run your own custom benchmarks.
 
 > The following workloads represent common Spanner use-cases:
 >
@@ -399,7 +398,7 @@ When you are finished running benchmarks, you should delete the `pkb-host` GCE V
 Cloud Shell:
 
 ```sh
-gcloud compute instances delete pkb-host --zone=us-west1-a
+gcloud compute instances delete pkb-host --zone=us-east4-a
 ```
 
 You may also wish to remove the `pkb_results` dataset in BigQuery. You can
@@ -417,7 +416,7 @@ You have completed the Spanner PerfKit Benchmarker tutorial!
 ### Connection timed out
 Your test may fail with the following error:
 `STDOUT: STDERR: ssh: connect to host xxx.xxx.xxx.xxx port 22: Connection timed out in CreateAndBootVm`
-This is a transient error that sometimes occurs during a run. This error occurs at a higher frequency for larger instances / number of client VMs. You can rerun to get rid of this error. Alternatively, you can amend [this line in pkb](https://github.com/GoogleCloudPlatform/PerfKitBenchmarker/blob/46fe3bf4dc71e7357ab75c491c6a0d47037c2b19/perfkitbenchmarker/linux_packages/ycsb.py#L1206) to become  
+This is a transient error that sometimes occurs during a run. This error occurs at a higher frequency for larger instances / number of client VMs. You can rerun to get rid of this error. Alternatively, you can amend [this line in pkb](https://github.com/GoogleCloudPlatform/PerfKitBenchmarker/blob/46fe3bf4dc71e7357ab75c491c6a0d47037c2b19/perfkitbenchmarker/linux_packages/ycsb.py#L1206) to become
 `vm.RemoteCommand('sudo rm -f ' + remote_path, ignore_failure=True)`
 (add the ignore_failure=True flag)
 
@@ -429,6 +428,7 @@ This is a transient error that sometimes occurs during a run. This error occurs 
 The provided benchmark configurations cover two separate workload requirement use-cases:
  - **Low Latency**: Benchmarks for latency-sensitive workloads
  - **Throughput**: Benchmarks for throughput-maximizing workloads
+ - **Recommended Utilization**: Benchmarks which are run at spanner's recommended CPU utilization for failover safety
 
 ### CPU Utilization Targets
 
@@ -440,6 +440,10 @@ In the latency benchmark configurations, the YCSB [`target` runtime parameter](h
 
 During throughput benchmarks, Spanner High-Priority CPU was maintained above the [published](https://cloud.google.com/spanner/docs/cpu-utilization#recommended-max) 65% High-Priority CPU Utilization guideline.
 
+#### Recommended Utilization
+
+During the recommended utilization benchmarks, Spanner's High-Priority CPU was maintained around the [recommended 65% utilization](https://cloud.google.com/spanner/docs/cpu-utilization#recommended-max) for failover safety.
+
 **CPU Utilization and Zonal Fault Tolerance**
 
 A Regional Cloud Spanner instance is spread across three zones. In case of a zonal failure, Spanner will shift traffic from the downed zone to the remaining two zones. Any application running above the 65% CPU Utilization guidance should be prepared to modify instance provisioning and/or  application behavior to avoid overwhelming the remaining zones.
@@ -450,7 +454,7 @@ This benchmark allows you to set any number as the target QPS, so what number sh
 
 ### Provisioning
 
-These benchmarks are designed to run against [Regional](https://cloud.google.com/spanner/docs/instances#regional_configurations) Cloud Spanner instances (us-west1) using in-region [Google Compute Engine](https://cloud.google.com/compute) virtual machines. All benchmarks provision a three-node Spanner Instance with fifteen [n1-standard-1](https://cloud.google.com/compute/docs/machine-types#n1_standard_machine_types) Compute Engine VMs. (5VMs per Spanner Node
+These benchmarks are designed to run against [Regional](https://cloud.google.com/spanner/docs/instances#regional_configurations) Cloud Spanner instances (us-east4) using in-region [Google Compute Engine](https://cloud.google.com/compute) virtual machines. All benchmarks provision a three-node Spanner Instance with [n1-standard-2](https://cloud.google.com/compute/docs/general-purpose-machines#n2_series) Compute Engine VMs as clients.
 
 ### Sleeping between Load and Run
 
@@ -464,7 +468,7 @@ It is recommended that these tests are executed with some frequency to account f
 
 Alerting thresholds for Cloud Spanner can be set using [Cloud Monitoring](https://cloud.google.com/spanner/docs/monitoring-cloud#create-alert).
 
-Benchmark figures are not suitable for defining alert thresholds on real-world workloads. Alerting thresholds for any workload should be based on the specific requirements of that workload. Actual workloads vary in requirements and behavior. 
+Benchmark figures are not suitable for defining alert thresholds on real-world workloads. Alerting thresholds for any workload should be based on the specific requirements of that workload. Actual workloads vary in requirements and behavior.
 
 ### Workload Variability
 
